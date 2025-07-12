@@ -1,17 +1,45 @@
 import axios from './axios';
 
-export interface Comment { id: number; post: number; parent?: number; content: string; author: string; created_at: string; }
+export interface Author {
+  id: number;
+  name: string;
+}
 
+export interface Comment {
+  id: number;
+  community: number;
+  author: Author;
+  content: string;
+  created: string;
+  updated: string;
+  parent: number | null;
+  is_deleted: boolean;
+}
+
+// 1. 댓글 목록 조회
 export const fetchComments = async (communityId: number): Promise<Comment[]> => {
   const res = await axios.get(`/community/${communityId}/comments/`);
   return res.data;
 };
 
-export const createComment = async (postId: number, content: string, parentId?: number): Promise<Comment> => {
-  const res = await axios.post(`posts/${postId}/comments/`, { content, parent: parentId });
+// 2. 댓글 작성
+export const createComment = async (communityId: number, content: string): Promise<Comment> => {
+  const res = await axios.post(`/community/${communityId}/comments/`, { content });
   return res.data;
 };
 
-export const deleteComment = async (commentId: number): Promise<void> => {
-  await axios.delete(`comments/${commentId}/`);
+// 3. 대댓글 작성
+export const createReply = async (parentCommentId: number, content: string): Promise<Comment> => {
+  const res = await axios.post(`/community/comments/${parentCommentId}/replies/create/`, { content });
+  return res.data;
+};
+
+// 4. 댓글 삭제
+export const deleteComment = async (communityId: number, commentId: number): Promise<void> => {
+  await axios.delete(`/community/${communityId}/comments/${commentId}/`);
+};
+
+// 5. 대댓글 삭제
+export const deleteReply = async (parentCommentId: number, replyId: number): Promise<void> => {
+  await axios.delete(`/community/comments/${parentCommentId}/replies/${replyId}/`);
 };

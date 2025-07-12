@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Comment, fetchComments } from '../api/comment';
+import type { Comment } from '../api/comment';
+import { fetchComments } from '../api/comment';
 import CommentList from '../components/CommentList';
 import CommentForm from '../components/CommentForm';
 

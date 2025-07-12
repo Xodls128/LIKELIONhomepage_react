@@ -1,15 +1,24 @@
 import { useState } from 'react';
 import { createComment, createReply } from '../api/comment';
+import { isLoggedIn } from '../utils/auth';
 
 interface CommentFormProps {
   communityId: number;
-  parentId?: number;
-  onSuccess?: () => void;
+  parentId?: number; // 대댓글일 경우
+  onSuccess: () => void;
 }
 
 function CommentForm({ communityId, parentId, onSuccess }: CommentFormProps) {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
+
+  if (!isLoggedIn()) {
+    return (
+      <div className="text-gray-500 text-sm italic">
+        댓글을 작성하려면 로그인하세요.
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +32,7 @@ function CommentForm({ communityId, parentId, onSuccess }: CommentFormProps) {
         await createComment(communityId, content);
       }
       setContent('');
-      if (onSuccess) onSuccess();
+      onSuccess();
     } catch (err) {
       console.error('댓글 작성 실패', err);
     } finally {
@@ -32,18 +41,19 @@ function CommentForm({ communityId, parentId, onSuccess }: CommentFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 space-y-2">
+    <form onSubmit={handleSubmit} className="space-y-2">
       <textarea
-        className="w-full border p-2 rounded resize-none text-sm"
-        rows={3}
-        placeholder={parentId ? '답글을 입력하세요...' : '댓글을 입력하세요...'}
+        className="w-full border p-2 rounded text-sm"
+        rows={2}
         value={content}
-        onChange={e => setContent(e.target.value)}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder={parentId ? "답글을 작성하세요..." : "댓글을 작성하세요..."}
+        disabled={loading}
       />
-      <div className="text-right">
+      <div>
         <button
           type="submit"
-          className="bg-blue-500 text-white px-3 py-1 text-sm rounded disabled:opacity-50"
+          className="bg-blue-500 text-white px-3 py-1 text-sm rounded"
           disabled={loading}
         >
           {loading ? '작성 중...' : '작성'}

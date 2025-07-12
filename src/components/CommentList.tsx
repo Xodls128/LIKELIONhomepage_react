@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { Comment, deleteComment, deleteReply } from '../api/comment';
+import type { Comment } from '../api/comment';
+import { deleteComment, deleteReply } from '../api/comment';
 import CommentForm from './CommentForm';
+import { isLoggedIn } from '../utils/auth';
 
 interface CommentListProps {
   comments: Comment[];
@@ -37,7 +39,7 @@ function CommentList({ comments, communityId, onRefresh }: CommentListProps) {
               <p className="font-semibold text-sm text-gray-700">
                 {parent.author.name}
               </p>
-              {!parent.is_deleted && (
+              {!parent.is_deleted && isLoggedIn() && (
                 <button
                   onClick={() => handleDelete(parent)}
                   className="text-xs text-red-500 hover:underline"
@@ -54,7 +56,7 @@ function CommentList({ comments, communityId, onRefresh }: CommentListProps) {
               )}
             </p>
 
-            {!parent.is_deleted && (
+            {!parent.is_deleted && isLoggedIn() && (
               <button
                 onClick={() =>
                   setActiveReplyId(prev => (prev === parent.id ? null : parent.id))
@@ -87,7 +89,7 @@ function CommentList({ comments, communityId, onRefresh }: CommentListProps) {
                   <p className="font-semibold text-xs text-gray-600">
                     {reply.author.name}
                   </p>
-                  {!reply.is_deleted && (
+                  {!reply.is_deleted && isLoggedIn() && (
                     <button
                       onClick={() => handleDelete(reply)}
                       className="text-xs text-red-400 hover:underline"

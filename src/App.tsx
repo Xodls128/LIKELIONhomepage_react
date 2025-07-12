@@ -1,17 +1,16 @@
-import { Routes, Route } from 'react-router-dom'
-import CommunityPage from './pages/CommunityPage.tsx'
-import PostPage from './pages/PostPage.tsx'
-import NewPostPage from './pages/NewPostPage.tsx'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import PostPage from './pages/PostPage';
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<CommunityPage />} />
-      <Route path="/post/:id" element={<PostPage />} />
-      <Route path="/new" element={<NewPostPage />} />
-      <Route path="/edit/:id" element={<NewPostPage />} />
-    </Routes>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<PostPage />} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

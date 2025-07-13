@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createComment, createReply } from '../api/comment';
-import { isLoggedIn } from '../utils/auth';
+import { useAuth } from '../context/AuthContext';
 
 interface CommentFormProps {
   communityId: number;
@@ -9,10 +9,11 @@ interface CommentFormProps {
 }
 
 function CommentForm({ communityId, parentId, onSuccess }: CommentFormProps) {
+  const { isLoggedIn } = useAuth();
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (!isLoggedIn()) {
+  if (!isLoggedIn) {
     return (
       <div className="text-gray-500 text-sm italic">
         댓글을 작성하려면 로그인하세요.

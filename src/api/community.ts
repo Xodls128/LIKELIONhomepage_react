@@ -25,3 +25,9 @@ export const updatePost = async (id: number, data: { title: string; content: str
 export const deletePost = async (id: number): Promise<void> => {
   await api.delete(`posts/${id}/`);
 };
+
+
+export async function toggleLike(communityId: number): Promise<{ liked: boolean }> {
+  const response = await api.post(`/community/${communityId}/like/`);
+  return response.data;
+}
